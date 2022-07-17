@@ -6,8 +6,8 @@ class AuthController extends GetxController {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool isLoginPage = true;
 
-  String? emailAddress;
-  String? password;
+  String emailAddress = '';
+  String password = '';
   final ScrollController scrollController = ScrollController();
 
   void changePage() {

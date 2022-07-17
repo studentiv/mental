@@ -71,6 +71,11 @@ class SignInScreen extends GetView<AuthController> {
                               color: const Color.fromRGBO(158, 158, 158, 1)
                                   .withOpacity(0.2)),
                           child: TextFormField(
+                            onFieldSubmitted: (value) => controller.isLoginPage
+                                ? controller.signIn(controller.emailAddress,
+                                    controller.password)
+                                : controller.signUp(controller.emailAddress,
+                                    controller.password),
                             obscureText: true,
                             onChanged: (value) => controller.setPassword(value),
                             onTap: () async {
