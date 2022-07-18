@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mental/features/auth/auth_controller.dart';
+import 'package:mental/routes.dart';
 import 'package:mental/shared/constants/app_constans.dart';
+import 'package:mental/shared/until/validator.dart';
 
-class SignInScreen extends GetView<AuthController> {
-  const SignInScreen({super.key});
+class AuthScreen extends GetView<AuthController> {
+  const AuthScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,54 +43,71 @@ class SignInScreen extends GetView<AuthController> {
                           height: 30,
                         ),
                         Container(
+                          padding: EdgeInsets.only(bottom: 15),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: const Color.fromRGBO(158, 158, 158, 1)
                                   .withOpacity(0.2)),
-                          child: TextFormField(
-                            onChanged: (value) =>
-                                controller.setEmailAddress(value),
-                            onTap: () async {
-                              await Future.delayed(const Duration(seconds: 1));
-                              controller.scrollController.animateTo(180,
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.ease);
-                            },
-                            textInputAction: TextInputAction.next,
-                            decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 20),
-                                label: Text('Email')),
+                          child: Form(
+                            key: controller.emailFieldKey,
+                            child: TextFormField(
+                              initialValue: controller.emailAddress,
+                              validator: (value) => emailFieldValidator(value),
+                              onChanged: (value) =>
+                                  controller.setEmailAddress(value),
+                              onTap: () async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                controller.scrollController.animateTo(180,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.ease);
+                              },
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                  errorStyle:
+                                      kDefaultTextStyle.copyWith(fontSize: 14),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 25, right: 25, top: 20),
+                                  label: const Text('Email')),
+                            ),
                           ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Container(
+                          padding: const EdgeInsets.only(bottom: 15),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: const Color.fromRGBO(158, 158, 158, 1)
                                   .withOpacity(0.2)),
-                          child: TextFormField(
-                            onFieldSubmitted: (value) => controller.isLoginPage
-                                ? controller.signIn(controller.emailAddress,
-                                    controller.password)
-                                : controller.signUp(controller.emailAddress,
-                                    controller.password),
-                            obscureText: true,
-                            onChanged: (value) => controller.setPassword(value),
-                            onTap: () async {
-                              await Future.delayed(const Duration(seconds: 1));
-                              controller.scrollController.animateTo(180,
-                                  duration: const Duration(milliseconds: 500),
-                                  curve: Curves.ease);
-                            },
-                            decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 20),
-                                label: Text('Password')),
+                          child: Form(
+                            key: controller.passwordFieldKey,
+                            child: TextFormField(
+                              initialValue: controller.password,
+                              validator: (value) =>
+                                  passwordFieldValidator(value),
+                              onFieldSubmitted: (value) =>
+                                  controller.isLoginPage
+                                      ? controller.signIn()
+                                      : controller.signUp(),
+                              obscureText: true,
+                              onChanged: (value) =>
+                                  controller.setPassword(value),
+                              onTap: () async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                controller.scrollController.animateTo(180,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.ease);
+                              },
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 25, right: 25, top: 20),
+                                  label: Text('Password')),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -100,11 +119,7 @@ class SignInScreen extends GetView<AuthController> {
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: kAccentColor),
-                              onPressed: () => controller.isLoginPage
-                                  ? controller.signIn(
-                                      'email@gmail.com', 'password')
-                                  : controller.signUp(
-                                      'emailAddress', 'password'),
+                              onPressed: () => controller.signIn(),
                               child: Text(
                                 controller.isLoginPage ? 'Sign in' : 'Sign up',
                                 style: kDefaultTextStyle.copyWith(fontSize: 18),
@@ -131,7 +146,7 @@ class SignInScreen extends GetView<AuthController> {
                             style: TextStyle(fontSize: 16),
                           ),
                           TextButton(
-                            onPressed: controller.changePage,
+                            onPressed: () => controller.changePage(),
                             child: Text(
                               controller.isLoginPage ? 'Register' : 'Login',
                               style: kDefaultTextStyle.copyWith(

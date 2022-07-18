@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mental/features/intro/intro_controller.dart';
 import 'package:mental/shared/constants/app_constans.dart';
 
-class IntroScreen extends StatelessWidget {
+class IntroScreen extends GetView<IntroController> {
   const IntroScreen({super.key});
 
   @override

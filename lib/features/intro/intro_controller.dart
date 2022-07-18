@@ -1,26 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:mental/routes.dart';
 import 'package:mental/shared/di/injector.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mental/shared/dto/user_dto.dart';
+import 'package:mental/shared/until/local_data.dart';
 
 class IntroController extends GetxController {
-  final sharedPreferences = getIt<SharedPreferences>();
-
-  String? email;
-  String? password;
+  final FirebaseAuth _firebaseAuth = getIt();
+  final LocalData _localData = getIt();
 
   @override
-  void onInit() {
-    super.onInit();
-    authCheck();
+  void onReady() {
+    load();
+    super.onReady();
   }
 
-  void authCheck() {
-    email = sharedPreferences.getString('email');
-    password = sharedPreferences.getString('password');
-    if (email != null && password != null) {
+  void load() async {
+    if (_firebaseAuth.currentUser != null) {
+      User user = _firebaseAuth.currentUser!;
+      await _localData.setUser(
+          UserDTO(id: user.uid, email: user.email!, isSpecialist: false));
+      Get.offAndToNamed(Routes.main);
     } else {
-      Get.toNamed(Routes.auth);
+      Get.offAndToNamed(Routes.auth);
     }
   }
 }

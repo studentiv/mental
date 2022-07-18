@@ -20,7 +20,7 @@ class MentalApp extends StatelessWidget {
         ),
       ),
       getPages: routes,
-      initialRoute: Routes.auth,
+      initialRoute: Routes.intro,
       initialBinding: GlobalBinding(),
     );
   }
